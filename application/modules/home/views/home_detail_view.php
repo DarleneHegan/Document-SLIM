@@ -137,15 +137,20 @@
                                             $keep_name = $this->input->get('keep_name');
                                             $flash_name = $this->session->flashdata('saved_app_name');
                                             
-                                            $val_app_name = '';
+                                            // 1. Tentukan nilai default dari database/data lama dulu
+                                            $val_app_name = isset($row['application_name']) ? $row['application_name'] : '';
+                                            
+                                            // 2. Jika proses save_stay berjalan, ambil dari flash_name
                                             if ($keep_name == 1 && !empty($flash_name)) {
                                                 $val_app_name = $flash_name;
-                                            } 
-                                            elseif (isset($row['application_name'])) {
-                                                $val_app_name = $row['application_name'];
+                                            }
+
+                                            // 3. ATURAN UTAMA: Jika buka form baru/buat ulang (mode add), hapus & paksa kosong!
+                                            if (isset($mode) && $mode == 'add') {
+                                                $val_app_name = '';
                                             }
                                         ?>
-                                        <input type="text" name="application_name" class="form-control" required value="<?= $val_app_name ?>" <?= $is_readonly ? 'readonly' : '' ?>>
+                                        <input type="text" name="application_name" class="form-control" autocomplete="off" required value="<?= $val_app_name ?>" <?= $is_readonly ? 'readonly' : '' ?>> 
                                     </div>
                                 </div>
 
