@@ -616,7 +616,9 @@
                                         <input type="text" name="Url" id="input_url" class="form-control" 
                                                value="<?= isset($row['Url']) ? $row['Url'] : '' ?>" 
                                                placeholder="contoh: www.domain.com" 
-                                               required <?= $is_readonly ? 'readonly' : '' ?>> <small id="url_error_msg" class="text-danger" style="display: none;">Format URL tidak valid.</small>
+                                               required <?= $is_readonly ? 'readonly' : '' ?>>
+                                                <small id="url_error_msg" class="text-danger" style="display: none;">Format URL tidak valid. Wajib: https://www.(sesuaikan link yang anda buat).com</small>
+
                                     </div>
 								</div>
                             </div>
@@ -1297,7 +1299,7 @@
     
     $(document).ready(function() {
         // --- TAMBAHAN VALIDASI URL (LIVE CHECK) ---
-        var urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+[\w\d]{2,}(\/.*)?$/i;
+        var urlPattern = /^https:\/\/www\.[a-zA-Z0-9-]+\.com(\/.*)?$/;
         $('#input_url').on('blur keyup', function() {
             var urlValue = $(this).val().trim();
             if (urlValue !== '' && !urlPattern.test(urlValue)) {
