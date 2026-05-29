@@ -205,9 +205,12 @@
 								<div class="col-md-4">
                                     <div class="form-group">
                                         <label>Standard Category (%) <span class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" name="standard_category" class="form-control" 
-                                               value="<?= isset($row['standard_category']) ? $row['standard_category'] : '' ?>" 
-                                               <?= ($is_readonly || $this->session->userdata('role_id') != 1) ? 'readonly' : '' ?>>
+                                        <input type="text" name="standard_category" id="input_standard_category" class="form-control" 
+                                            value="<?= isset($row['standard_category']) ? $row['standard_category'] : '' ?>" 
+                                            placeholder="contoh: 98 atau 98.8"
+                                            autocomplete="off"
+                                            <?= ($is_readonly || $this->session->userdata('role_id') != 1) ? 'readonly' : '' ?>>
+                                        <small id="standard_category_error_msg" class="text-danger" style="display: none;">Nilai tidak valid. Hanya angka dan titik (.) yang diperbolehkan, maksimal 100.</small>
                                     </div>
                                 </div>
                             </div>
@@ -1321,66 +1324,75 @@
             var currentValue = el.val();
             var forbiddenChars;
 
-            // 1. Pengecualian untuk URL (biarkan divalidasi oleh Pattern URL di atas)
+            // 1. Pengecualian untuk URL
             if (id === 'input_url' || name === 'Url') {
                 return; 
             }
 
-            // 2. Validasi Live Year (Hanya boleh ANGKA)
-            if (id === 'live_year' || name === 'Live_Year') {
+            // 2. Pengecualian untuk Standard Category (dihandle oleh listener tersendiri)
+            if (id === 'input_standard_category' || name === 'standard_category') {
+                return;
+            }
+
+            // 3. Validasi Live Year (Hanya boleh ANGKA)
+            if (name === 'live_year') {
                 forbiddenChars = /[^0-9]/g;
             } 
-            // 3. Validasi Standard Category (Angka, Titik, Koma)
-            else if (id === 'standard_category' || name === 'Standard_Category') {
-                forbiddenChars = /[^0-9.,]/g;
-            } 
-            // 4. Validasi Umum (Huruf, Angka, Spasi, Titik, Koma, Strip, Underscore)
+            // 4. Validasi Umum
             else {
                 forbiddenChars = /[^a-zA-Z0-9\s.,_\-]/g;
             }
 
-            // Eksekusi pembersihan karakter jika melanggar regex
             if (forbiddenChars.test(currentValue)) {
                 el.val(currentValue.replace(forbiddenChars, ''));
-                
-                // Efek visual kedip merah
                 el.addClass('is-invalid');
                 setTimeout(function() {
                     el.removeClass('is-invalid');
                 }, 400);
             }
         });
-            
-        $(document).on('keydown', '#live_year, #standard_category, input[name="Live_Year"], input[name="Standard_Category"]', function(e) {
-            // Blokir simbol -, +, dan huruf e / E
+
+        $(document).on('keydown', 'input[name="live_year"]', function(e) {
             if (['-', '+', 'e', 'E'].includes(e.key)) {
                 e.preventDefault();
             }
         });
-        
-        $('#formDetail').on('input', 'input[type="text"], textarea', function() {
-            // Pengecualian untuk field URL (karena URL wajib pakai titik dua, garis miring, dll)
-            if ($(this).attr('id') === 'input_url' || $(this).attr('name') === 'Url') {
-                return; 
+
+        $('#input_standard_category').on('input', function() {
+            var raw = $(this).val();
+
+            // Hapus semua karakter selain angka dan titik secara langsung saat diketik
+            var cleaned = raw.replace(/[^0-9.]/g, '');
+
+            // Pastikan hanya ada satu titik
+            var dotIndex = cleaned.indexOf('.');
+            if (dotIndex !== -1) {
+                cleaned = cleaned.substring(0, dotIndex + 1) + cleaned.substring(dotIndex + 1).replace(/\./g, '');
             }
 
-            // Regex: HANYA izinkan huruf, angka, spasi, titik, koma, strip, dan underscore
-            var forbiddenChars = /[^a-zA-Z0-9\s.,_\-]/g; 
-            var currentValue = $(this).val();
+            // Paksa update nilai input jika ada karakter yang dihapus
+            if (cleaned !== raw) {
+                $(this).val(cleaned);
+            }
 
-            if (forbiddenChars.test(currentValue)) {
-                // Langsung hapus karakter terlarang yang baru saja diketik
-                $(this).val(currentValue.replace(forbiddenChars, ''));
-                
-                // Beri efek visual berkedip merah agar user sadar karakternya ditolak
-                var el = $(this);
-                el.addClass('is-invalid');
-                setTimeout(function() {
-                    el.removeClass('is-invalid');
-                }, 400); // Kedip selama 400ms
+            // Cek validitas untuk tampilkan pesan merah
+            var isInvalid = false;
+
+            if (cleaned !== '' && !/^[0-9]+(\.[0-9]*)?$/.test(cleaned)) {
+                isInvalid = true;
+            }
+            if (cleaned !== '' && parseFloat(cleaned) > 100) {
+                isInvalid = true;
+            }
+
+            if (isInvalid) {
+                $(this).addClass('is-invalid');
+                $('#standard_category_error_msg').show();
+            } else {
+                $(this).removeClass('is-invalid');
+                $('#standard_category_error_msg').hide();
             }
         });
-
         $(document).on('input', '.swal2-popup textarea', function() {
             var forbiddenChars = /[^a-zA-Z0-9\s.,_\-]/g; 
             var currentValue = $(this).val();
@@ -1495,16 +1507,39 @@
                     return; 
                 }
             }
+            // --- VALIDASI STANDARD CATEGORY ---
+            // --- VALIDASI STANDARD CATEGORY ---
+            // --- VALIDASI STANDARD CATEGORY ---
+            let stdCatInput = $('#input_standard_category');
+            if (stdCatInput.length > 0 && stdCatInput.prop('readonly') === false) {
+                let stdVal = stdCatInput.val().trim();
+                if (stdVal !== '') {
+                    let isStdInvalid = false;
 
-            // --- VALIDASI URL ---
-            let urlInput = $('#input_url');
-            if (urlInput.length > 0) {
-                let urlValue = urlInput.val().trim();
-                if (urlValue !== '' && !urlPattern.test(urlValue)) {
-                    Swal.fire({ icon: 'error', title: 'Format URL Tidak Valid', text: 'Pastikan URL mengandung ekstensi yang benar seperti .com, .id, dll.' });
-                    $('#url_error_msg').show();
-                    urlInput.addClass('is-invalid').focus();
-                    return; 
+                    // Cek KETAT: hanya boleh angka dan satu titik, karakter apapun selain itu langsung invalid
+                    // Ini menangkap koma, spasi, huruf, dan special char lainnya
+                    if (!/^[0-9]+(\.[0-9]+)?$/.test(stdVal) && !/^[0-9]+$/.test(stdVal)) {
+                        isStdInvalid = true;
+                    }
+
+                    // Cek nilai maksimal 100 (hanya jika format sudah bersih)
+                    if (!isStdInvalid && parseFloat(stdVal) > 100) {
+                        isStdInvalid = true;
+                    }
+
+                    if (isStdInvalid) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Standard Category Tidak Valid',
+                            text: 'Nilai Standard Category tidak boleh lebih dari 100 dan hanya boleh menggunakan angka serta titik (.). Contoh: 98 atau 98.8',
+                            confirmButtonText: 'OK',
+                            buttonsStyling: false,
+                            customClass: { confirmButton: 'btn btn-theme-gradient px-4' }
+                        });
+                        stdCatInput.addClass('is-invalid');
+                        $('#standard_category_error_msg').show();
+                        return;
+                    }
                 }
             }
 
