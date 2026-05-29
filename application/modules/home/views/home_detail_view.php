@@ -1137,10 +1137,12 @@
                                     <div class="d-flex flex-column h-100">
                                         <div class="table-responsive scrollable-card-body p-0" style="flex: 1 1 auto; overflow-y: auto; min-height: 0;">
                                             <table class="table table-striped table-bordered table-hover text-sm m-0 w-100 text-center">
+                                                
                                                 <thead class="bg-light" style="position: sticky; top: 0; z-index: 1; font-size: 11px;">
                                                     <tr class="bg-info" style="height: 30px;">
-                                                        <th class="text-center align-middle border-top-0">File Name</th> 
-                                                        <th class="border-top-0 p-0 align-middle">
+                                                        <th class="text-center align-middle border-top-0" style="width: 30%;">Date Uploaded</th> 
+                                                        <th class="text-center align-middle border-top-0" style="width: 55%;">File Name</th> 
+                                                        <th class="border-top-0 p-0 align-middle" style="width: 15%;">
                                                             <div class="d-flex justify-content-center align-items-center" style="height: 100%; min-height: 0px; min-width: 50px;">
                                                                 Action
                                                             </div>
@@ -1151,7 +1153,14 @@
                                                     <?php if (!empty($sup_doc_history)): ?>
                                                         <?php foreach ($sup_doc_history as $doc): ?>
                                                             <tr>
-                                                                <td class="align-middle"><?= $doc['file_name']; ?></td>
+                                                                <td class="align-middle">
+                                                                    <?= !empty($doc['created_at']) ? date('j/n/y H:i', strtotime($doc['created_at'])) : '-' ?>
+                                                                </td>
+
+                                                                <td class="align-middle" style="text-align: left; padding-left: 10px;">
+                                                                    <?= $doc['file_name']; ?>
+                                                                </td>
+                                                                
                                                                 <td class="align-middle p-0">
                                                                     <div class="d-flex justify-content-center align-items-center" style="height: 100%; min-height: 0px;">
                                                                         <a href="javascript:void(0)" onclick="downloadSupDoc('<?= base_url('home/download_sup_doc/' . $doc['file_name']); ?>')" class="btn btn-xs btn-outline-warning" title="Download Document" style="margin-bottom: 0;">
@@ -1163,32 +1172,32 @@
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <tr>
-                                                            <td colspan="2" class="text-center text-muted py-4">
+                                                            <td colspan="3" class="text-center text-muted py-4">
                                                                 Belum ada riwayat dokumen pendukung (Sup Doc).
                                                             </td>
                                                         </tr>
-                                                    <?php endif; ?>
+                                                        <?php endif; ?>
                                                 </tbody>
                                             </table>
                                         </div> 
+
                                         <div class="custom-card-footer">
                                             <div class="d-flex justify-content-center w-100" style="flex: 0 0 auto; padding: 0.75rem 1.25rem;">
-                                                <?php if ($this->session->userdata('role_id') == 1 && !empty($current_apps_id)): ?>
-                                                    <button type="button" class="btn btn-primary w-100" onclick="confirmUploadSupDoc('<?= $current_apps_id; ?>')">
-                                                        <i class="fas fa-file-pdf mr-1"></i> Upload Sup Doc
-                                                    </button>
-                                                <?php endif; ?>
+                                                
+                                                <button type="button" class="btn btn-primary w-100" onclick="confirmUploadSupDoc('<?= isset($current_apps_id) ? $current_apps_id : 0; ?>')">
+                                                    <i class="fas fa-file-upload mr-1"></i> Upload Supporting Document
+                                                </button>
+
                                             </div>
                                         </div>
-                                    </div>
+                                        </div>
                                 </div>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-
+                                </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
       </div>
 	  
     </section>
@@ -2141,6 +2150,19 @@
     }
 
     window.confirmUploadSupDoc = function(appId) {
+        // --- PROTEKSI JIKA PORTOFOLIO BARU BELUM DISIMPAN ---
+        if (appId == 0 || appId == '0' || appId == '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Simpan Data Terlebih Dahulu',
+                text: 'Dokumen pendukung baru bisa diunggah setelah Anda menyimpan data Portofolio ini sebagai Draft (Save) atau Submit.',
+                confirmButtonText: 'OK',
+                buttonsStyling: false,
+                customClass: { confirmButton: 'btn btn-theme-gradient px-4' }
+            });
+            return;
+        }
+
         Swal.fire({
             title: 'Upload Dokumen Pendukung',
             // Bagian HTML diubah agar lebih ringkas seperti modal SLA
@@ -2162,15 +2184,28 @@
             preConfirm: () => {
                 let fileInput = document.getElementById('swal-upload-sup-doc');
                 
+                // 1. Validasi file wajib dipilih
                 if (fileInput.files.length === 0) {
                     Swal.showValidationMessage('File dokumen wajib dipilih!');
                     return false;
                 }
 
+                // 2. Ambil ekstensi file
+                let fileName = fileInput.files[0].name;
+                let ext = fileName.split('.').pop().toLowerCase();
+                
+                // 3. DAFTAR EKSTENSI BLACKLIST (TERLARANG)
+                // Ditambahkan variasi 'exe' & 'js' untuk berjaga-jaga jika maksudnya format script/executable
+                let forbiddenExt = ['xc', 'exe', 'jss', 'js', 'css', 'bat', 'cmd'];
+                
+                if (forbiddenExt.includes(ext)) {
+                    Swal.showValidationMessage('Format file .' + ext + ' dilarang demi keamanan sistem!');
+                    return false;
+                }
+                
                 fileInput.style.display = 'none';
                 document.body.appendChild(fileInput);
                 
-                // Mengembalikan fileInput saja karena Nama Dokumen dihapus
                 return { fileInput: fileInput };
             }
         }).then((result) => {
@@ -2183,8 +2218,6 @@
                 form.method = 'POST';
                 form.action = '<?= base_url("home/upload_sup_doc/") ?>' + appId; 
                 form.enctype = 'multipart/form-data'; 
-
-                // Baris terkait inputDocName dihapus karena tidak lagi diinput melalui modal
                 
                 form.appendChild(safeFileInput);
                 document.body.appendChild(form);

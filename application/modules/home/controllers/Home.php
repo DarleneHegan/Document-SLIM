@@ -1417,27 +1417,38 @@ class Home extends CI_Controller {
     }
 
     public function upload_sup_doc($apps_id) {
-        if (!$this->session->userdata('role_id')) {
-            show_error('Akses Ditolak.', 403); 
+        // 1. Izinkan semua user yang sudah login (Semua Role: IT Dev, IT SLM, EA)
+        if (!$this->session->userdata('user_id')) {
+            show_error('Akses Ditolak. Silakan login terlebih dahulu.', 403); 
             return;
         }
 
         $apps_id = (int)$apps_id;
 
-        // Pastikan 'sup_doc_file' sesuai dengan name pada input di JS/View
         if (!isset($_FILES['sup_doc_file']) || $_FILES['sup_doc_file']['error'] == UPLOAD_ERR_NO_FILE) {
             $this->session->set_flashdata('error', 'Silakan pilih file terlebih dahulu.');
             redirect('home/detail/' . $apps_id);
             return;
         }
 
-        $upload_path = './uploads/documents/';
-        if (!is_dir($upload_path)) { mkdir($upload_path, 0777, true); }
-
+        // 2. BACK-END VALIDASI: Cek ekstensi file secara ketat sebelum dipindahkan ke server
         $file_ext = strtolower(pathinfo($_FILES['sup_doc_file']['name'], PATHINFO_EXTENSION));
+        $forbidden_extensions = ['xc', 'exe', 'jss', 'js', 'css', 'bat', 'cmd'];
 
+        if (in_array($file_ext, $forbidden_extensions)) {
+            $this->session->set_flashdata('error', 'Gagal Upload! Format file .' . $file_ext . ' diblokir oleh sistem karena alasan keamanan.');
+            redirect('home/detail/' . $apps_id);
+            return;
+        }
+
+        $upload_path = './uploads/documents/';
+        if (!is_dir($upload_path)) { 
+            mkdir($upload_path, 0777, true); 
+        }
+
+        // Set konfigurasi library upload CodeIgniter
         $config['upload_path']   = $upload_path;
-        $config['allowed_types'] = '*'; 
+        $config['allowed_types'] = '*'; // Diizinkan semua file karena disaring manual oleh array di atas
         $config['max_size']      = 0;
         $config['detect_mime']   = FALSE;
         $config['xss_clean']     = FALSE;
@@ -1446,7 +1457,6 @@ class Home extends CI_Controller {
         $this->upload->initialize(array()); 
         $this->upload->initialize($config);
 
-        // Ganti 'sup_file' menjadi 'sup_doc_file' agar sesuai dengan input
         if (!$this->upload->do_upload('sup_doc_file')) {
             $error = $this->upload->display_errors('', '');
             $this->session->set_flashdata('error', 'Gagal upload: ' . strip_tags($error));
@@ -1454,7 +1464,7 @@ class Home extends CI_Controller {
             $upload_data = $this->upload->data();
             $file_name = $upload_data['file_name'];
 
-            // Pastikan Home_model->insert_sup_history menerima parameter yang benar
+            // Masukkan data log upload ke database melalui model
             $this->Home_model->insert_sup_history($apps_id, $file_name, $file_ext);
             $this->session->set_flashdata('success', "Dokumen pendukung (Format: " . strtoupper($file_ext) . ") berhasil diunggah.");
         }
