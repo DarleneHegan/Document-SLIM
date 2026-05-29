@@ -829,11 +829,16 @@ class Home extends CI_Controller {
         redirect('home');
     }
     
+    // =========================================================================
+// REVISI 2 (UPDATE CONTROLLER): AJAX HANDLER FOR STRICT DUPLICATE
+// =========================================================================
     public function check_duplicate_ajax() {
-        $app_name = $this->security->xss_clean($this->input->post('application_name'));
-        $module_name = $this->security->xss_clean($this->input->post('module'));
+        // Ambil input dari POST secara real-time
+        $app_name = $this->input->post('application_name');
+        $module_name = $this->input->post('module');
         $apps_id = (int)$this->input->post('apps_id');
 
+        // Panggil model yang sudah di-upgrade logic-nya di atas
         $is_duplicate = $this->Home_model->check_duplicate($app_name, $module_name, $apps_id);
         
         echo json_encode(['is_duplicate' => $is_duplicate]);

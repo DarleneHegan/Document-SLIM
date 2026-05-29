@@ -994,16 +994,61 @@ class Home_model extends CI_Model {
         return $this->db->trans_status();
     }
     
+    // =========================================================================
+    // REVISI 2 (UPDATE MODEL): STRIP SPASI, CASE-INSENSITIVE, & DETEKSI KATA TERBALIK
+    // =========================================================================
     public function check_duplicate($app_name, $module, $exclude_apps_id = 0) {
-        $this->db->where('application_name', trim($app_name));
-        $this->db->where('module', trim($module));
-        
-        // Jika sedang Edit data, abaikan ID miliknya sendiri
+        // 1. Bersihkan semua spasi dan ubah ke lowercase (huruf kecil)
+        $clean_input_app = strtolower(preg_replace('/\s+/', '', $app_name));
+        $clean_input_mod = strtolower(preg_replace('/\s+/', '', $module));
+
+        // 2. Pecah per huruf dan urutkan secara alfabetis (untuk deteksi AI vs IA, gen vs ren)
+        // Kita buat array huruf unik atau diurutkan agar penulisan acak/terbalik terdeteksi
+        $input_app_chars = str_split($clean_input_app); sort($input_app_chars);
+        $input_mod_chars = str_split($clean_input_mod); sort($input_mod_chars);
+
+        // 3. Tarik data dari database
+        $this->db->select('apps_id, application_name, module');
         if ($exclude_apps_id > 0) {
             $this->db->where('apps_id !=', $exclude_apps_id);
         }
-        
-        return $this->db->count_all_results('tbl_portofolio_apps_master') > 0;
+        $query = $this->db->get('tbl_portofolio_apps_master')->result_array();
+
+        foreach ($query as $row) {
+            $db_app = strtolower(preg_replace('/\s+/', '', $row['application_name']));
+            $db_mod = strtolower(preg_replace('/\s+/', '', $row['module']));
+
+            // A. Cek kecocokan persis setelah spasi dibuang
+            if ($clean_input_app === $db_app && $clean_input_mod === $db_mod) {
+                return true; // Dilarang!
+            }
+
+            // B. Cek kecocokan anagram/terbalik per kolom (Isolasi Field)
+            $db_app_chars = str_split($db_app); sort($db_app_chars);
+            $db_mod_chars = str_split($db_mod); sort($db_mod_chars);
+
+            // Kasus Khusus: Jika user ketik "AI ren" tapi di DB ada "AI gen"
+            // Anda meminta ini DILARAANG (IA gen - AI ren -> Dilarang).
+            // Kita gunakan algoritma levenshtein atau similarity untuk mendeteksi kemiripan ekstrem (> 70%)
+            similar_text($clean_input_app, $db_app, $percent_app);
+            similar_text($clean_input_mod, $db_mod, $percent_mod);
+
+            // Jika huruf penyusun Application Name sama (AI vs IA) 
+            // DAN kemiripan kata Modul sangat tinggi atau huruf penyusunnya mirip (gen vs ren memiliki 2 huruf sama 'e' dan 'n')
+            if ($input_app_chars === $db_app_chars) {
+                // Jika modulnya sama persis dibolak-balik ATAU tingkat kemiripan teks di atas 60% (seperti gen & ren)
+                if ($input_mod_chars === $db_mod_chars || $percent_mod >= 60) {
+                    return true; // Dilarang keras!
+                }
+            }
+            
+            // Cek sebaliknya jika Application Name juga memiliki kemiripan ekstrem
+            if ($percent_app >= 60 && $percent_mod >= 60) {
+                return true; // Dilarang!
+            }
+        }
+
+        return false; // Diperbolehkan jika benar-benar berbeda (seperti IA Gen dengan IA Ren)
     }
     
     public function is_app_done($apps_id) {

@@ -1520,25 +1520,27 @@
                     success: function(res) {
                         $('#loadingOverlay').css('display', 'none');
                         if(res.is_duplicate) {
-                            // JIKA DUPLIKAT: Muncul popup dan hentikan proses (Form tidak akan hilang)
+                            // 1. Tampilkan Pop Up Error Duplikasi
                             Swal.fire({ 
                                 icon: 'error', 
-                                title: 'Data Duplikat!', 
-                                html: 'Gagal! Aplikasi dengan nama <b>"'+appName+'"</b> dan modul <b>"'+modName+'"</b> sudah ada di database.', 
+                                title: 'Kombinasi Data Dilarang!', 
+                                html: 'Gagal! Kombinasi Aplikasi <b>"'+appName+'"</b> dan Modul <b>"'+modName+'"</b> sudah ada atau mirip dengan data di database (Kata terbalik / variasi spasi dilarang).', 
                                 confirmButtonText: 'OK', 
                                 buttonsStyling: false, 
-                                customClass: { 
-                                    confirmButton: 'btn btn-theme-gradient px-4' 
-                                } 
+                                customClass: { confirmButton: 'btn btn-theme-gradient px-4' } 
                             });
+                            
+                            // 2. OTOMATIS HAPUS hanya kedua kolom form ini saja
+                            $('input[name="application_name"]').val('').addClass('is-invalid').focus();
+                            $('input[name="module"]').val('').addClass('is-invalid');
                         } else {
-                            // JIKA AMAN: Lanjut ke validasi sisa dan submit
+                            // Jika lolos dari duplikasi, lanjutkan pengiriman form
                             continueSubmission(type); 
                         }
                     },
                     error: function() {
                         $('#loadingOverlay').css('display', 'none');
-                        Swal.fire('Error', 'Gagal mengecek data ke server.', 'error');
+                        Swal.fire('Error', 'Gagal mengecek duplikasi data ke server.', 'error');
                     }
                 });
             } else {
