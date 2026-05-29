@@ -1546,20 +1546,6 @@
             let appName = $('input[name="application_name"]').val();
             let modName = $('input[name="module"]').val(); 
 
-            if((type === 'draft' || type === 'save_stay') && (!appName || !modName)) {
-                Swal.fire({ 
-                    icon: 'warning', 
-                    title: 'Data Belum Lengkap', 
-                    text: 'Application Name dan Module Name wajib diisi untuk menyimpan data.',
-                    confirmButtonText: 'OK',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-theme-gradient px-4'
-                    }
-                });
-                return;
-            }
-
 
             // Daftarkan nama atribut 'name' dari kolom yang TIDAK BERBINTANG (opsional)
         let optionalFields = [

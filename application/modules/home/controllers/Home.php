@@ -1474,7 +1474,7 @@ class Home extends CI_Controller {
                 'remarks'    => 'Uploaded Supporting Document: ' . $file_name,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
+
             $this->session->set_flashdata('success', "Dokumen pendukung (Format: " . strtoupper($file_ext) . ") berhasil diunggah.");
         }
 
