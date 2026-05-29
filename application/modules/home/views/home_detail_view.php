@@ -1506,6 +1506,69 @@
                 return;
             }
 
+
+            // Daftarkan nama atribut 'name' dari kolom yang TIDAK BERBINTANG (opsional)
+        let optionalFields = [
+            'decommission_year', 
+            'application_version', 
+            'development_language', 
+            'application_developer', 
+            'supporting_web_server', 
+            'supporting_application_server', 
+            'supporting_others',
+            'ha', 'ha_view'
+        ];
+
+        // Aturan khusus pengecualian jika user bukan Role 1 (IT SLM), tambahkan ke daftar opsional
+        <?php if($this->session->userdata('role_id') != 1): ?>
+            optionalFields.push('operational_day_id', 'operational_hour_id', 'standard_category');
+        <?php endif; ?>
+        
+        let isValid = true;
+        
+        // 1. Scan semua input, select, dan textarea yang tampil/visible
+        $('#formDetail').find('input:visible, select, textarea').not('input[type=hidden]').not('input[type=file]').each(function() {
+            let fieldName = $(this).attr('name');
+            if(!fieldName || $(this).attr('type') === 'checkbox') return;
+
+            // Jika nama field tidak ada di daftar opsional, artinya field ini BERBINTANG (*)
+            let isRequired = !optionalFields.includes(fieldName);
+
+            if(isRequired && (!$(this).val() || $(this).val().toString().trim() === '')) {
+                isValid = false; 
+                $(this).addClass('is-invalid'); // Beri border merah AdminLTE/Bootstrap
+            } else { 
+                $(this).removeClass('is-invalid'); 
+            }
+        });
+
+        // 2. Scan khusus untuk Dropdown Checkbox Berbintang (Database, OS, Server)
+        let dbSelected = $('.db-checkbox:checked').length;
+        let osSelected = $('.os-checkbox:checked').length;
+        let srvSelected = $('.srv-checkbox:checked').length;
+
+        if (dbSelected === 0 || osSelected === 0 || srvSelected === 0) {
+            isValid = false;
+            if(dbSelected === 0) $('#dropdownDB').addClass('is-invalid').css('border-color', '#dc3545');
+            if(osSelected === 0) $('#dropdownOS').addClass('is-invalid').css('border-color', '#dc3545');
+            if(srvSelected === 0) $('#dropdownSrv').addClass('is-invalid').css('border-color', '#dc3545');
+        } else {
+            $('#dropdownDB, #dropdownOS, #dropdownSrv').removeClass('is-invalid').css('border-color', '');
+        }
+
+        // 3. Jika ditemukan kolom berbintang yang kosong, batasi proses (berlaku untuk Save & Submit)
+        if(!isValid) {
+             Swal.fire({ 
+                icon: 'error', 
+                title: 'Data Belum Lengkap', 
+                text: 'Mohon lengkapi semua kolom form yang berbintang (*) yang masih kosong (bertanda border merah) sebelum melanjutkan.',
+                confirmButtonText: 'OK',
+                buttonsStyling: false,
+                customClass: { confirmButton: 'btn btn-theme-gradient px-4' }
+            });
+            return; // Menghentikan eksekusi script agar form tidak tersimpan/tersubmit
+        }
+
             if (appName && modName) {
                 $('#loadingOverlay').css('display', 'flex');
                 $.ajax({
