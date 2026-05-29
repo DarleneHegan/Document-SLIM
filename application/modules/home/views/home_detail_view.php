@@ -615,7 +615,7 @@
                                         <label>URL <span class="text-danger">*</span></label>
                                         <input type="text" name="Url" id="input_url" class="form-control" 
                                                value="<?= isset($row['Url']) ? $row['Url'] : '' ?>" 
-                                               placeholder="contoh: www.domain.com" 
+                                               placeholder="contoh: https://www.domain.com" 
                                                required <?= $is_readonly ? 'readonly' : '' ?>>
                                                 <small id="url_error_msg" class="text-danger" style="display: none;">Format URL tidak valid. Wajib: https://www.(sesuaikan link yang anda buat).com</small>
 
@@ -1027,6 +1027,9 @@
                                                                                 break;
                                                                             case 'IMPORT':
                                                                                 $bg = '#f3e5f5'; $color = '#6a1b9a'; // Ungu
+                                                                                break;
+                                                                            case 'SUP DOC':
+                                                                                $bg = '#ed33ce'; $color = '#07b521'; // Teal/Tosca
                                                                                 break;
                                                                         }
                                                                     ?>
