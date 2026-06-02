@@ -1371,27 +1371,33 @@
                 cleaned = cleaned.substring(0, dotIndex + 1) + cleaned.substring(dotIndex + 1).replace(/\./g, '');
             }
 
-            // Paksa update nilai input jika ada karakter yang dihapus
-            if (cleaned !== raw) {
-                $(this).val(cleaned);
+            // Cek jika nilainya melebihi 100
+            if (cleaned !== '' && parseFloat(cleaned) > 100) {
+                $(this).val(''); // Langsung hapus otomatis isian di dalam input
+                $(this).addClass('is-invalid'); // Beri border merah pada kolom
+                $('#standard_category_error_msg').text('Nilai tidak boleh lebih dari 100! Kolom otomatis dikosongkan.').show(); // Tampilkan teks merah
+                return;
             }
 
-            // Cek validitas untuk tampilkan pesan merah
+            // Cek validitas format biasa (hanya angka dan titik)
             var isInvalid = false;
-
             if (cleaned !== '' && !/^[0-9]+(\.[0-9]*)?$/.test(cleaned)) {
                 isInvalid = true;
             }
-            if (cleaned !== '' && parseFloat(cleaned) > 100) {
-                isInvalid = true;
-            }
 
+            // Update status visual teks merah di bawah form
             if (isInvalid) {
                 $(this).addClass('is-invalid');
-                $('#standard_category_error_msg').show();
+                $('#standard_category_error_msg').text('Nilai tidak valid. Hanya angka dan titik (.) yang diperbolehkan, maksimal 100.').show();
             } else {
+                // Jika user mengetik dengan benar (dan < 100), pastikan warna merah hilang
                 $(this).removeClass('is-invalid');
                 $('#standard_category_error_msg').hide();
+            }
+
+            // Paksa update nilai input jika ada karakter non-angka yang dihapus
+            if (cleaned !== raw && parseFloat(raw) <= 100) {
+                $(this).val(cleaned);
             }
         });
         $(document).on('input', '.swal2-popup textarea', function() {
