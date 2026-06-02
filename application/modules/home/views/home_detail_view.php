@@ -1011,6 +1011,7 @@
                                                                     <?php 
                                                                         $action = strtoupper(trim($aud['action'])); 
                                                                         $bg = '#e9ecef'; $color = '#495057'; // Default Abu-abu
+                                                                        // echo "<pre>ACTION: [" . $action . "] LENGTH: " . strlen($action) . "</pre>";
 
                                                                         switch ($action) {
                                                                             case 'SUBMIT':
@@ -1032,7 +1033,7 @@
                                                                                 $bg = '#f3e5f5'; $color = '#6a1b9a'; // Ungu
                                                                                 break;
                                                                             case 'SUP DOC':
-                                                                                $bg = '#ed33ce'; $color = '#07b521'; // Teal/Tosca
+                                                                                $bg = '#e0f7fa'; $color = '#00695c'; // Teal/Tosca
                                                                                 break;
                                                                         }
                                                                     ?>

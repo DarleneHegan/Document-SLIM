@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 5px; vertical-align: middle; }
+        th { background-color: #f2f2f2; text-align: center; font-weight: bold; }
+        .text-center { text-align: center; }
+</style>
+</head>
+<body>
+	<h3>My Portofolio</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Workflow Status</th>
+                <th>Category</th>
+                <th>Application Name</th>
+                <th>Short Name</th>
+                <th>Module</th>
+                <th>Database</th>
+                <th>Operating Software</th>
+                <th>Application Type</th>
+                <th>Server Type</th>
+                <th>Standard Category (%)</th>
+                <th>Description</th>
+                <th>Live Year</th>
+                <th>Decommission Year</th>
+                <th>Resilience</th>
+                <th>DR Availability</th>
+                <th>HA</th>
+                <th>Network</th>
+                <th>Deployment Model</th>
+                <th>Deployment Provider</th>
+                <th>Deployment Site</th>
+                <th>Operational Hour</th>
+                <th>Operational Day</th>
+                <th>Solution Vendor</th>
+                <th>Services Vendor</th>
+                <th>LOB Directorate</th>
+                <th>LOB Sub-Directorate</th>
+                <th>LOB Group</th>
+                <th>LOB Group Head</th>
+                <th>IT Sub-Directorate</th>
+                <th>IT Dept Head</th>
+                <th>IT Support Group</th>
+                <th>IT Group Head</th>
+                <th>IT Support Division</th>
+                <th>IT Division Head</th>
+                <th>App Version</th>
+                <th>Dev Language</th>
+                <th>App Developer</th>
+                <th>Supporting Web Server</th>
+                <th>Supporting App Server</th>
+                <th>Supporting Others</th>
+                <th>Source Code Owned</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">IT SLM</td>
+                <td class="text-center">Very Important</td>
+                
+                <td>as</td>
+                <td>aaa</td>
+                <td>sss</td>
+                <td>DB2,  Ms SQL Server,  Oracle</td>
+                <td>Ms Windows Server,  RHEL</td>
+                <td>Custom-built</td>
+                <td>GCM,  VM</td>
+                <td class="text-center">99.00%</td>
+                <td>aa</td>
+                
+                <td class="text-center">1111</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L3</td>
+                <td class="text-center">Yes</td>
+                <td class="text-center">Yes</td>
+                
+                <td>Internal User (Include Branches)</td>
+                <td>IaaS</td>
+                <td>CIMB</td>
+                <td>Bintaro</td>
+                
+                <td>08:00:00 - 22:00:00</td>
+                <td>Monday - Tuesday</td>
+                
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>pokemons.com</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">EA</td>
+                <td class="text-center">Critical</td>
+                
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>Ms SQL Server</td>
+                <td>Ms Windows Server</td>
+                <td>Off the shelf</td>
+                <td>AWS,  Azure,  Physical</td>
+                <td class="text-center">100.00%</td>
+                <td>a</td>
+                
+                <td class="text-center">12121</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L3</td>
+                <td class="text-center">Yes</td>
+                <td class="text-center">Yes</td>
+                
+                <td>Internal User (Include Branches)</td>
+                <td>On-Premises</td>
+                <td>CIMB</td>
+                <td>Asia-southeast2 (Jakarta)</td>
+                
+                <td>00:00:00 - 23:59:00</td>
+                <td>Tuesday - Friday</td>
+                
+                <td>a</td>
+                <td>a</td>
+                
+                <td>as</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">No</td>
+                <td>https://www.cimbniaga.co.id/</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">NEED RENEWAL</td>
+                <td class="text-center">Necessary</td>
+                
+                <td>tes</td>
+                <td>tes2</td>
+                <td>ada</td>
+                <td>Oracle</td>
+                <td>Ms Windows Server,  OS400</td>
+                <td>Off the shelf</td>
+                <td>Physical,  VM</td>
+                <td class="text-center">12.00%</td>
+                <td>sssa</td>
+                
+                <td class="text-center">1212</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L2</td>
+                <td class="text-center">Yes</td>
+                <td class="text-center">Yes</td>
+                
+                <td>Internal User (Include Branches)</td>
+                <td>On-Premises</td>
+                <td>CIMB</td>
+                <td>Asia-southeast2 (Jakarta)</td>
+                
+                <td>08:00:00 - 18:00:00</td>
+                <td>Monday - Saturday</td>
+                
+                <td>s</td>
+                <td>s</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>pokemon.com</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">DONE</td>
+                <td class="text-center">Critical</td>
+                
+                <td>ATHAYA TEST</td>
+                <td>TEST AA</td>
+                <td>TEST ATHAYA</td>
+                <td>DB2,  Oracle</td>
+                <td>Ms Windows Server</td>
+                <td>Custom-built</td>
+                <td>Physical</td>
+                <td class="text-center">98.70%</td>
+                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eget est non augue varius dictum ac a justo. Vivamus vel sollicitudin velit, at luctus tortor.</td>
+                
+                <td class="text-center">2026</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L0</td>
+                <td class="text-center">No</td>
+                <td class="text-center"></td>
+                
+                <td>Customer Facing</td>
+                <td>On-Premises</td>
+                <td>GCP</td>
+                <td>Bintaro</td>
+                
+                <td>00:00:00 - 23:59:00</td>
+                <td>Monday - Sunday</td>
+                
+                <td>CIMB</td>
+                <td>NIAGA</td>
+                
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                <td>TA</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>www.com</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">DONE</td>
+                <td class="text-center">Very Important</td>
+                
+                <td>tes1000</td>
+                <td>tes</td>
+                <td>tes1001</td>
+                <td>CloudSQL for MySQL 8.0,  Oracle</td>
+                <td>Ms Windows Server,  OS400</td>
+                <td>Off the shelf</td>
+                <td>Physical</td>
+                <td class="text-center">99.00%</td>
+                <td>Tes upload SLA</td>
+                
+                <td class="text-center">2025</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L1</td>
+                <td class="text-center">Yes</td>
+                <td class="text-center">No</td>
+                
+                <td>Internal User (Include Branches)</td>
+                <td>On-Premises</td>
+                <td>CIMB</td>
+                <td>Bintaro</td>
+                
+                <td>08:00:00 - 22:00:00</td>
+                <td>Monday - Sunday</td>
+                
+                <td>OTAA</td>
+                <td>OTAA</td>
+                
+                <td>Directoratess</td>
+                <td>Sub-Directorate</td>
+                <td>Group</td>
+                <td>Group Head</td>
+                
+                <td>IT Sub-Directorate</td>
+                <td>IT Department Head</td>
+                <td>IT Support Group</td>
+                <td>IT Group Head</td>
+                <td>IT Support Division</td>
+                <td>IT Division Head</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>OTAA</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>tes.com</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Active</td>
+                <td class="text-center">DONE</td>
+                <td class="text-center">Important</td>
+                
+                <td>k</td>
+                <td>a</td>
+                <td>o</td>
+                <td>Oracle</td>
+                <td>OS400</td>
+                <td>Custom-built</td>
+                <td>Physical</td>
+                <td class="text-center">99.00%</td>
+                <td>a</td>
+                
+                <td class="text-center">1111</td>
+                <td class="text-center">-</td>
+                <td class="text-center">L0</td>
+                <td class="text-center">No</td>
+                <td class="text-center"></td>
+                
+                <td>Internal User (Include Branches)</td>
+                <td>On-Premises</td>
+                <td>CIMB</td>
+                <td>Asia-southeast2 (Jakarta)</td>
+                
+                <td>08:00:00 - 22:00:00</td>
+                <td>Monday - Saturday</td>
+                
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                <td>a</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>slim.com</td>
+            </tr>
+                                    <tr>
+                <td class="text-center">Not Active</td>
+                <td class="text-center">DONE</td>
+                <td class="text-center">Important</td>
+                
+                <td>Group Financial Management System</td>
+                <td>GFMS</td>
+                <td>Group Financial Management System</td>
+                <td>Oracle</td>
+                <td>Ms Windows Server</td>
+                <td>Custom-built</td>
+                <td>Physical,  VM</td>
+                <td class="text-center">98.00%</td>
+                <td>Group Financial Management System &#40;GFMS&#41; adalah Platform regional untuk Sistem Keuangan Terintegrasi Grup.</td>
+                
+                <td class="text-center">2025</td>
+                <td class="text-center">2026</td>
+                <td class="text-center">L1</td>
+                <td class="text-center">Yes</td>
+                <td class="text-center">No</td>
+                
+                <td>Internal User (Exclude Branches)</td>
+                <td>On-Premises</td>
+                <td>CIMB</td>
+                <td>Bintaro</td>
+                
+                <td>08:00:00 - 23:59:00</td>
+                <td>Monday - Sunday</td>
+                
+                <td>Oracle</td>
+                <td>Mitra Integrasi Informatika</td>
+                
+                <td>Directorate</td>
+                <td>Sub-Directorate</td>
+                <td>Group</td>
+                <td>Group Head</td>
+                
+                <td>IT Sub-Directorate</td>
+                <td>IT Department Head</td>
+                <td>IT Support Group</td>
+                <td>IT Group Head</td>
+                <td>IT Support Division</td>
+                <td>IT Division Head</td>
+                
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-center">Yes</td>
+                <td>https://www.cimbniaga.co.id/</td>
+            </tr>
+                    </tbody>
+    </table>
+</body>
+</html>

@@ -998,12 +998,11 @@ class Home_model extends CI_Model {
     // REVISI 2 (UPDATE MODEL): STRIP SPASI, CASE-INSENSITIVE, & DETEKSI KATA TERBALIK
     // =========================================================================
     public function check_duplicate($app_name, $module, $exclude_apps_id = 0) {
-        // 1. Bersihkan semua spasi dan ubah ke lowercase (huruf kecil)
+        // 1. Bersihkan semua spasi dan ubah ke lowercase
         $clean_input_app = strtolower(preg_replace('/\s+/', '', $app_name));
         $clean_input_mod = strtolower(preg_replace('/\s+/', '', $module));
 
-        // 2. Pecah per huruf dan urutkan secara alfabetis (untuk deteksi AI vs IA, gen vs ren)
-        // Kita buat array huruf unik atau diurutkan agar penulisan acak/terbalik terdeteksi
+        // 2. Pecah per huruf dan urutkan untuk deteksi anagram/terbalik
         $input_app_chars = str_split($clean_input_app); sort($input_app_chars);
         $input_mod_chars = str_split($clean_input_mod); sort($input_mod_chars);
 
@@ -1018,37 +1017,37 @@ class Home_model extends CI_Model {
             $db_app = strtolower(preg_replace('/\s+/', '', $row['application_name']));
             $db_mod = strtolower(preg_replace('/\s+/', '', $row['module']));
 
-            // A. Cek kecocokan persis setelah spasi dibuang
-            if ($clean_input_app === $db_app && $clean_input_mod === $db_mod) {
-                return true; // Dilarang!
-            }
-
-            // B. Cek kecocokan anagram/terbalik per kolom (Isolasi Field)
             $db_app_chars = str_split($db_app); sort($db_app_chars);
             $db_mod_chars = str_split($db_mod); sort($db_mod_chars);
 
-            // Kasus Khusus: Jika user ketik "AI ren" tapi di DB ada "AI gen"
-            // Anda meminta ini DILARAANG (IA gen - AI ren -> Dilarang).
-            // Kita gunakan algoritma levenshtein atau similarity untuk mendeteksi kemiripan ekstrem (> 70%)
             similar_text($clean_input_app, $db_app, $percent_app);
             similar_text($clean_input_mod, $db_mod, $percent_mod);
 
-            // Jika huruf penyusun Application Name sama (AI vs IA) 
-            // DAN kemiripan kata Modul sangat tinggi atau huruf penyusunnya mirip (gen vs ren memiliki 2 huruf sama 'e' dan 'n')
-            if ($input_app_chars === $db_app_chars) {
-                // Jika modulnya sama persis dibolak-balik ATAU tingkat kemiripan teks di atas 60% (seperti gen & ren)
-                if ($input_mod_chars === $db_mod_chars || $percent_mod >= 60) {
-                    return true; // Dilarang keras!
-                }
+            // ATURAN 1: Application Name DAN Module persis sama
+            if ($clean_input_app === $db_app && $clean_input_mod === $db_mod) {
+                return true;
             }
-            
-            // Cek sebaliknya jika Application Name juga memiliki kemiripan ekstrem
-            if ($percent_app >= 60 && $percent_mod >= 60) {
-                return true; // Dilarang!
+
+            // ATURAN 2: Application Name sama/mirip, Module sama/mirip (dua-duanya)
+            $app_same = ($clean_input_app === $db_app || $input_app_chars === $db_app_chars || $percent_app >= 60);
+            $mod_same = ($clean_input_mod === $db_mod || $input_mod_chars === $db_mod_chars || $percent_mod >= 60);
+
+            if ($app_same && $mod_same) {
+                return true;
+            }
+
+            // ATURAN 3 (TAMBAHAN BARU): Module persis sama, App Name berbeda -> TETAP DILARANG
+            if ($clean_input_mod === $db_mod) {
+                return true;
+            }
+
+            // ATURAN 4 (TAMBAHAN BARU): Module anagram/mirip >= 80%, App Name berbeda -> TETAP DILARANG
+            if ($input_mod_chars === $db_mod_chars || $percent_mod >= 80) {
+                return true;
             }
         }
 
-        return false; // Diperbolehkan jika benar-benar berbeda (seperti IA Gen dengan IA Ren)
+        return false;
     }
     
     public function is_app_done($apps_id) {

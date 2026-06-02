@@ -1464,12 +1464,11 @@ class Home extends CI_Controller {
             $upload_data = $this->upload->data();
             $file_name = $upload_data['file_name'];
 
-            // Masukkan data log upload ke database melalui model
             $this->Home_model->insert_sup_history($apps_id, $file_name, $file_ext);
 
-            $this->db->insert('tbl_apps_audit_trail', [
-                'apps_id'    => $apps_id,
-                'role_id'    => $this->session->userdata('role_id'),
+            $insert_result = $this->db->insert('tbl_apps_audit_trail', [
+                'apps_id'    => (int)$apps_id,
+                'role_id'    => (int)$this->session->userdata('role_id'),
                 'action'     => 'SUP DOC',
                 'remarks'    => 'Uploaded Supporting Document: ' . $file_name,
                 'created_at' => date('Y-m-d H:i:s')
@@ -1494,3 +1493,4 @@ class Home extends CI_Controller {
         }
     }
 }
+?>
